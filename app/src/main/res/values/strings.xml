@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Shanbay-AutoPunch</string>
+    <string name="service_name">扇贝单词自动打卡</string>
+    <string name="description">1.本服务仅供用来模拟扇贝单词的手动点击,方便残障人士的每日打卡.\n2.请谨慎使用本服务,自行承担各方面损失.\n3.务必好好学习,天天向上哟 (￣▽￣)" ╮.\n
+    </string>
+
+</resources>
