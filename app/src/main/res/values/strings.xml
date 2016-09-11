@@ -1,6 +1,14 @@
 <resources>
-    <string name="app_name">Shanbay-AutoPunch</string>
+    <string name="app_name">扇贝助手</string>
     <string name="service_name">扇贝单词自动打卡</string>
+
+    <!--MainActivity-->
+    <string name="menu_setting_title">设置</string>
+    <string name="menu_about_title">关于</string>
+    <string name="btn_punch_card">去打卡</string>
+    <string name="text_minute">%s 分钟</string>
+    <string name="time_input_title">请输入时间</string>
+    <string name="time_minute">分钟</string>
     <string name="description">1.本服务仅供用来模拟扇贝单词的手动点击,方便残障人士的每日打卡.\n2.请谨慎使用本服务,自行承担各方面损失.\n3.务必好好学习,天天向上哟 (￣▽￣)" ╮.\n
     </string>
 

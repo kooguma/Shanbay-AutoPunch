@@ -3,6 +3,7 @@ package com.kumaj.shanbay_autopunch.service;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -103,6 +104,7 @@ public class ClickService extends AccessibilityService {
         serviceInfo.packageNames = new String[] { "com.shanbay.words" };
         serviceInfo.notificationTimeout = 100;
         setServiceInfo(serviceInfo);
+
     }
 
 

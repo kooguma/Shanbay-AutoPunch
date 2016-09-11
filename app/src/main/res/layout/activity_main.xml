@@ -1,17 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.kumaj.shanbay_autopunch.ui.MainActivity">
+    android:background="@android:color/white"
+    android:paddingLeft="@dimen/dimen_default_padding"
+    android:paddingRight="@dimen/dimen_default_padding"
+    android:paddingTop="@dimen/dimen_default_padding"
+    android:paddingBottom="@dimen/dimen_default_padding"
+    tools:context="com.kumaj.shanbay_autopunch.ui.MainActivity"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/item_time_expected"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_item_height"
+        android:gravity="center_vertical"
+        android:padding="@dimen/dime_item_padding"
+        android:background="@color/base_clicked_bg"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_time"
+            android:drawablePadding="@dimen/dimen_icon_padding"
+            android:textSize="16sp"
+            android:text="预计用时"/>
+
+        <TextView
+            android:id="@+id/text_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/text_minute"
+            android:layout_marginRight="@dimen/dime_item_padding"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_item_height"
+        android:gravity="center_vertical"
+        android:padding="@dimen/dime_item_padding"
+        android:layout_marginTop="@dimen/dime_item_padding"
+        android:background="@color/base_common_secondary_bg"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_punch_card"
+            android:drawablePadding="@dimen/dimen_icon_padding"
+            android:textSize="16sp"
+            android:text="自动打卡"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_auto_punch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_item_height"
+        android:gravity="center_vertical"
+        android:padding="@dimen/dime_item_padding"
+        android:layout_marginTop="@dimen/dime_item_padding"
+        android:background="@color/base_common_secondary_bg"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_share"
+            android:drawablePadding="@dimen/dimen_icon_padding"
+            android:textSize="16sp"
+            android:text="自动分享"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_auto_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_punch_card"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
-</RelativeLayout>
+        android:layout_marginTop="@dimen/dimen_default_padding"
+        android:text="@string/btn_punch_card"
+        android:background="@drawable/selector_button_punch_card"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"/>
+</LinearLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AppBase" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/base_action_bar_bg</item>
+        <item name="colorPrimaryDark">@color/base_green_dark</item>
+        <item name="colorAccent">@color/base_green_dark</item>
+        <item name="android:divider">@color/material_grey_300</item>
+        <item name="android:dividerHeight">2dp</item>
+    </style>
+</resources>
