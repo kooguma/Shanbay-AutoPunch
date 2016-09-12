@@ -11,6 +11,8 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import com.kumaj.shanbay_autopunch.mode.SettingModel;
+import com.kumaj.shanbay_autopunch.utils.SettingUtil;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -39,12 +41,19 @@ public class ClickService extends AccessibilityService {
 
     private final static String STR_PUNCH_CARD = "去打卡";
 
+    private final static String ID_LEARNING_NUM_TODAY = PACKAGE_NAME + "learning_num_today";
+
+    private final static String ID_LEARNING_NUM_PASSED = PACKAGE_NAME + "learning_num_passed";
+
+    private final static int GROUP_WORDS_NUM = 7;
+
     private final static int EVENT_START_LEARN = 0;
 
     private final static int EVENT_KNOWN_OR_NEXT_GROUP = 1;
 
     private final static int EVENT_UNKNOWN = 2;
 
+    private SettingModel mSettingModel;
     private final Timer timer = new Timer(true);
 
     private final TimerTask timerTask = new TimerTask() {
@@ -75,8 +84,8 @@ public class ClickService extends AccessibilityService {
             Log.e(TAG, "msg.what = " + msg.what);
             switch (msg.what) {
                 case EVENT_START_LEARN:
-                    if(!performClickById(ID_LEARNING_START)){ //开始
-                        if(!performClickById(ID_LEARNING_CHECK_IN)){//打卡
+                    if (!performClickById(ID_LEARNING_START)) { //开始
+                        if (!performClickById(ID_LEARNING_CHECK_IN)) {//打卡
                             performClickById(ID_LEARNING_TEXT_IMAGE);//去测试
                         }
                     }
@@ -84,9 +93,9 @@ public class ClickService extends AccessibilityService {
                 case EVENT_KNOWN_OR_NEXT_GROUP:
                     if (!performClickById(ID_KNOWN)) { // 认识/不认识
                         if (!performClickById(ID_NEXT_BUTTON)) { //下一个
-                           if(!performClickById(ID_NEXT_GROUP)){ //下一组
-                               performClickById(ID_STATE_BUTTON);//去打卡
-                           }
+                            if (!performClickById(ID_NEXT_GROUP)) { //下一组
+                                performClickById(ID_STATE_BUTTON);//去打卡
+                            }
                         }
                     }
                     break;
@@ -104,7 +113,7 @@ public class ClickService extends AccessibilityService {
         serviceInfo.packageNames = new String[] { "com.shanbay.words" };
         serviceInfo.notificationTimeout = 100;
         setServiceInfo(serviceInfo);
-
+        mSettingModel = SettingUtil.getInstance().loadSettings();
     }
 
 
@@ -124,6 +133,12 @@ public class ClickService extends AccessibilityService {
         Log.e(TAG, "onInterrupt");
         mTimerHandler = null;
         timerTask.cancel();
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2) private void calculate() {
+        int todayNum = Integer.parseInt(getItemTextById(ID_LEARNING_NUM_TODAY));
+        int passedNum = Integer.parseInt(getItemTextById(ID_LEARNING_NUM_PASSED));
     }
 
 
@@ -164,6 +179,24 @@ public class ClickService extends AccessibilityService {
             }
         }
         return false;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private String getItemTextById(String id) {
+        String text = null;
+        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+        if (nodeInfo != null) {
+            AccessibilityNodeInfo item = getItemById(nodeInfo, id);
+            try {
+                if (item != null) {
+                    text = item.getText().toString();
+                }
+            } finally {
+                nodeInfo.recycle();
+            }
+        }
+        return text;
     }
 
 

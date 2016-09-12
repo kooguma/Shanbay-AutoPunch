@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveSettings() {
         SettingModel model = new SettingModel();
         String minute = mTextMinute.getText().toString();
-        model.setExpectedTime(TextUtils.isEmpty(minute)?5:Long.valueOf(minute));
+        model.setExpectedTime(TextUtils.isEmpty(minute) ? 5 : Long.valueOf(minute));
         model.setAutoPunch(mSwitchAutoPunch.isChecked());
         model.setAutoShare(mSwitchAutoShare.isChecked());
         SettingUtil.getInstance().saveSettings(model);
@@ -105,10 +107,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startPunch() {
-       // openSettings();
-
+        if (!isSettingEnable()) {
+            openSettings();
+            return;
+        }
         Intent intent = new Intent();
-        intent.setClassName("com.shanbay.words","com.shanbay.words.activity.HomeActivity");
+        intent.setClassName("com.shanbay.words", "com.shanbay.words.activity.HomeActivity");
         startActivity(intent);
     }
 
@@ -116,5 +120,34 @@ public class MainActivity extends AppCompatActivity {
     private void openSettings() {
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivity(intent);
+        Toast.makeText(this, R.string.tip_open_service, Toast.LENGTH_LONG).show();
+    }
+
+
+    private boolean isSettingEnable() {
+        int ok = 0;
+        try {
+            ok = Settings.Secure.getInt(getApplicationContext().getContentResolver(),
+                Settings.Secure.ACCESSIBILITY_ENABLED);
+        } catch (Settings.SettingNotFoundException e) {
+        }
+        TextUtils.SimpleStringSplitter ms = new TextUtils.SimpleStringSplitter(':');
+        if (ok == 1) {
+            String settingValue = Settings.Secure
+                .getString(getApplicationContext().getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                ms.setString(settingValue);
+                while (ms.hasNext()) {
+                    String accessibilityService = ms.next();
+                    Log.e("TAG","service = " + accessibilityService);
+                    if (accessibilityService.equalsIgnoreCase(
+                        getString(R.string.service_package_name))) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

@@ -1,11 +1,16 @@
 <resources>
+    <!--use string resources for the texts which will be displayed to user.-->
+
     <string name="app_name">扇贝助手</string>
     <string name="service_name">扇贝单词自动打卡</string>
-
+    <string name="service_package_name">
+        com.kumaj.shanbay_autopunch/com.kumaj.shanbay_autopunch.service.ClickService
+    </string>
     <!--MainActivity-->
     <string name="menu_setting_title">设置</string>
     <string name="menu_about_title">关于</string>
     <string name="btn_punch_card">去打卡</string>
+    <string name="tip_open_service">请打开\"扇贝单词自动打卡\"服务</string>
     <string name="text_minute">%s 分钟</string>
     <string name="time_input_title">请输入时间</string>
     <string name="time_minute">分钟</string>
