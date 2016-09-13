@@ -56,27 +56,43 @@ public class ClickService extends AccessibilityService {
     private SettingModel mSettingModel;
     private final Timer timer = new Timer(true);
 
-    private final TimerTask timerTask = new TimerTask() {
-        private long time = 0;
+    private MyTimerTask mTimerTask;
 
+
+    private class MyTimerTask extends TimerTask {
+        private long time = 0;
         private final static int START_INTERVAL_TIME = 3;
-        private final static int KNOWN_INTERVAL_TIME = 3; //认识/不认识选择界面的时间间隔
-        private final static int NEXT_TIME = 5;//"下一个"界面的时间间隔;
+        private int mIntervalTime; //认识/不认识选择界面的时间间隔
+
+
+        MyTimerTask(int time) {
+            mIntervalTime = time;
+            Log.d(TAG, "interval time = " + time);
+        }
 
 
         @Override public void run() {
             Log.e(TAG, "time = " + time);
+            //finally try
             Message msg = Message.obtain();
-            if (time == START_INTERVAL_TIME) {
-                msg.what = EVENT_START_LEARN;
+            try {
+                if (time == START_INTERVAL_TIME) {
+                    msg.what = EVENT_START_LEARN;
+                    mTimerHandler.sendMessage(msg);
+                    return;
+                }
+                if ((time - START_INTERVAL_TIME) % mIntervalTime == 0) {
+                    msg.what = EVENT_KNOWN_OR_NEXT_GROUP;
+                    mTimerHandler.sendMessage(msg);
+                    time++;
+                }
+            } finally {
+                time++;
             }
-            if ((time - START_INTERVAL_TIME) % KNOWN_INTERVAL_TIME == 0) {
-                msg.what = EVENT_KNOWN_OR_NEXT_GROUP;
-            }
-            mTimerHandler.sendMessage(msg);
-            time++;
+
         }
-    };
+    }
+
 
     private Handler mTimerHandler = new Handler() {
         @Override public void handleMessage(Message msg) {
@@ -120,11 +136,13 @@ public class ClickService extends AccessibilityService {
     @Override public void onAccessibilityEvent(AccessibilityEvent event) {
         int eventType = event.getEventType();
         String className = event.getClassName().toString();
+        //// TODO: 16/9/13 监听返回键暂停服务
         Log.e(TAG, "evenType = " + eventType);
         Log.e(TAG, "class name = " + className);
-        if (className.equals("com.shanbay.words.activity.HomeActivity")) {
+        if (className.equals("com.shanbay.words.home.HomeActivity")) {
             Log.e(TAG, "进入主界面");
-            timer.schedule(timerTask, 0, 1000);
+            mTimerTask = new MyTimerTask(calcIntervalTime());
+            timer.schedule(mTimerTask, 0, 1000);
         }
     }
 
@@ -132,13 +150,19 @@ public class ClickService extends AccessibilityService {
     @Override public void onInterrupt() {
         Log.e(TAG, "onInterrupt");
         mTimerHandler = null;
-        timerTask.cancel();
+        mTimerTask.cancel();
     }
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2) private void calculate() {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2) private int calcIntervalTime() {
         int todayNum = Integer.parseInt(getItemTextById(ID_LEARNING_NUM_TODAY));
-        int passedNum = Integer.parseInt(getItemTextById(ID_LEARNING_NUM_PASSED));
+        int sections = todayNum * 2 + Math.round(todayNum / GROUP_WORDS_NUM);
+        //getExpectedTime - 已经被过的时间
+        //passedNum != 0 是否有纪录? ->有记录,减已经花过的时间;没有纪录,提示(可能不准)
+        //return 小于0的情况?
+        Log.d(TAG, "total time = " + mSettingModel.getExpectedTime() +
+            "todayNum = " + todayNum + " sections = " + sections);
+        return Math.round(mSettingModel.getExpectedTime() / sections);
     }
 
 

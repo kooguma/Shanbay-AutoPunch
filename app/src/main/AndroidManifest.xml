@@ -20,6 +20,8 @@
         <service
             android:label="@string/service_name"
             android:name="com.kumaj.shanbay_autopunch.service.ClickService"
+            android:enabled="true"
+            android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>

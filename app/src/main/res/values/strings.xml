@@ -11,7 +11,8 @@
     <string name="menu_about_title">关于</string>
     <string name="btn_punch_card">去打卡</string>
     <string name="tip_open_service">请打开\"扇贝单词自动打卡\"服务</string>
-    <string name="text_minute">%s 分钟</string>
+    <string name="tip_install_shanbay_words">请先安装扇贝单词</string>
+    <string name="text_minute">分钟</string>
     <string name="time_input_title">请输入时间</string>
     <string name="time_minute">分钟</string>
     <string name="description">1.本服务仅供用来模拟扇贝单词的手动点击,方便残障人士的每日打卡.\n2.请谨慎使用本服务,自行承担各方面损失.\n3.务必好好学习,天天向上哟 (￣▽￣)" ╮.\n

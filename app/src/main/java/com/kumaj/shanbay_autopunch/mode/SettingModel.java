@@ -12,7 +12,7 @@ public class SettingModel {
 
 
     public long getExpectedTime() {
-        return expectedTime / 1000 / 60;
+        return expectedTime / 1000 ;
     }
 
 

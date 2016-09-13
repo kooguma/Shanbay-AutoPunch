@@ -32,11 +32,16 @@
             android:text="预计用时"/>
 
         <TextView
-            android:id="@+id/text_minute"
+            android:id="@+id/text_minute_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/text_minute"
             android:layout_marginRight="@dimen/dime_item_padding"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dime_item_padding"
+            android:text="@string/text_minute"/>
 
         <ImageView
             android:layout_width="wrap_content"

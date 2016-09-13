@@ -1,5 +1,6 @@
 package com.kumaj.shanbay_autopunch.ui;
 
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.switch_auto_punch) SwitchCompat mSwitchAutoPunch;
     @BindView(R.id.switch_auto_share) SwitchCompat mSwitchAutoShare;
     @BindView(R.id.btn_punch_card) Button mBtnPunchCard;
-    @BindView(R.id.text_minute) TextView mTextMinute;
+    @BindView(R.id.text_minute_num) TextView mTextMinute;
 
     private SettingModel mSettingModel = new SettingModel();
     private final static String SETTING_KEY = "SETTINGS";
@@ -42,6 +43,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        setupView();
+    }
+
+
+    private void setupView() {
+        String minute = String.valueOf(
+            SettingUtil.getInstance().loadSettings().getExpectedTime() / 60);
+        mTextMinute.setText(minute);
     }
 
 
@@ -85,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
             .setView(content)
             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override public void onClick(DialogInterface dialog, int which) {
-                    mTextMinute.setText(
-                        getString(R.string.text_minute, editText.getText().toString()));
+                    mTextMinute.setText(editText.getText().toString());
                     dialog.cancel();
                 }
             })
@@ -112,8 +120,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Intent intent = new Intent();
-        intent.setClassName("com.shanbay.words", "com.shanbay.words.activity.HomeActivity");
-        startActivity(intent);
+        intent.setClassName("com.shanbay.words", "com.shanbay.words.home.HomeActivity");
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.tip_install_shanbay_words, Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -140,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
                 ms.setString(settingValue);
                 while (ms.hasNext()) {
                     String accessibilityService = ms.next();
-                    Log.e("TAG","service = " + accessibilityService);
                     if (accessibilityService.equalsIgnoreCase(
                         getString(R.string.service_package_name))) {
                         return true;
