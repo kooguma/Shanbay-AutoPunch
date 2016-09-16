@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import com.kumaj.shanbay_autopunch.mode.SettingModel;
@@ -60,36 +61,47 @@ public class ClickService extends AccessibilityService {
 
 
     private class MyTimerTask extends TimerTask {
-        private long time = 0;
-        private final static int START_INTERVAL_TIME = 3;
-        private int mIntervalTime; //认识/不认识选择界面的时间间隔
+
+        private final static int START_INTERVAL_TIME = 5;
+        private final int NEXT_INTERVAL_TIME; //认识/不认识选择界面的时间间隔
+        private int mStartTime;
+        private int mIntervalTime;
 
 
         MyTimerTask(int time) {
-            mIntervalTime = time;
+            NEXT_INTERVAL_TIME = calcIntervalTime();
             Log.d(TAG, "interval time = " + time);
         }
 
 
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override public void run() {
-            Log.e(TAG, "time = " + time);
-            //finally try
             Message msg = Message.obtain();
-            try {
-                if (time == START_INTERVAL_TIME) {
+            //start learn
+            if (getItemTextById(ID_LEARNING_START) != null) {
+                if (mStartTime == START_INTERVAL_TIME) {
                     msg.what = EVENT_START_LEARN;
+                    Log.d(TAG, "start learn");
+                    mStartTime = 0;
                     mTimerHandler.sendMessage(msg);
-                    return;
                 }
-                if ((time - START_INTERVAL_TIME) % mIntervalTime == 0) {
-                    msg.what = EVENT_KNOWN_OR_NEXT_GROUP;
-                    mTimerHandler.sendMessage(msg);
-                    time++;
-                }
-            } finally {
-                time++;
+                mStartTime++;
+                Log.d(TAG, "start time = " + mStartTime);
             }
-
+            //known or next group
+            if (getItemTextById(ID_KNOWN) != null
+                || getItemTextById(ID_NEXT_BUTTON) != null
+                || getItemTextById(ID_NEXT_GROUP) != null
+                || getItemTextById(ID_STATE_BUTTON) != null) {
+                if (mIntervalTime == NEXT_INTERVAL_TIME) {
+                    msg.what = EVENT_KNOWN_OR_NEXT_GROUP;
+                    Log.d(TAG, "known or next group");
+                    mIntervalTime = 0;
+                    mTimerHandler.sendMessage(msg);
+                }
+                mIntervalTime++;
+                Log.d(TAG, "interval time = " + mIntervalTime);
+            }
         }
     }
 
@@ -145,6 +157,8 @@ public class ClickService extends AccessibilityService {
             timer.schedule(mTimerTask, 0, 1000);
         }
     }
+
+
 
 
     @Override public void onInterrupt() {
@@ -232,7 +246,6 @@ public class ClickService extends AccessibilityService {
                 return list.get(0);
             }
         }
-        Log.e(TAG, "NodeInfo error");
         return null;
     }
 
@@ -245,7 +258,6 @@ public class ClickService extends AccessibilityService {
                 return list.get(0);
             }
         }
-        Log.e(TAG, "NodeInfo error");
         return null;
     }
 

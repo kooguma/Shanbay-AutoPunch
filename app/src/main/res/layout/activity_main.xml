@@ -18,7 +18,7 @@
         android:layout_height="@dimen/dimen_item_height"
         android:gravity="center_vertical"
         android:padding="@dimen/dime_item_padding"
-        android:background="@color/base_clicked_bg"
+        android:background="@color/base_common_primary_bg"
         android:orientation="horizontal">
 
         <TextView
@@ -56,7 +56,7 @@
         android:gravity="center_vertical"
         android:padding="@dimen/dime_item_padding"
         android:layout_marginTop="@dimen/dime_item_padding"
-        android:background="@color/base_common_secondary_bg"
+        android:background="@color/base_common_primary_bg"
         android:orientation="horizontal">
 
         <TextView
@@ -82,7 +82,7 @@
         android:gravity="center_vertical"
         android:padding="@dimen/dime_item_padding"
         android:layout_marginTop="@dimen/dime_item_padding"
-        android:background="@color/base_common_secondary_bg"
+        android:background="@color/base_common_primary_bg"
         android:orientation="horizontal">
 
         <TextView
@@ -93,7 +93,8 @@
             android:drawableLeft="@drawable/ic_share"
             android:drawablePadding="@dimen/dimen_icon_padding"
             android:textSize="16sp"
-            android:text="自动分享"/>
+            android:text="自动分享"
+            android:id="@+id/textView"/>
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switch_auto_share"
