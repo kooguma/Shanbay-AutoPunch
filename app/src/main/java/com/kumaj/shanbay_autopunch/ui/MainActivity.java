@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,9 +18,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.kumaj.shanbay_autopunch.R;
 import com.kumaj.shanbay_autopunch.mode.SettingModel;
 import com.kumaj.shanbay_autopunch.utils.SettingUtil;
@@ -42,15 +38,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupView();
+    }
+
+
+    private void setupView() {
         mItemTimeExpected = (LinearLayout) findViewById(R.id.item_time_expected);
         mSwitchAutoPunch = (SwitchCompat) findViewById(R.id.switch_auto_punch);
         mSwitchAutoShare = (SwitchCompat) findViewById(R.id.switch_auto_share);
         mBtnPunchCard = (Button) findViewById(R.id.btn_punch_card);
         mTextMinute = (TextView) findViewById(R.id.text_minute_num);
-    }
-
-
-    private void setupView() {
+        mItemTimeExpected.setOnClickListener(this);
+        mBtnPunchCard.setOnClickListener(this);
         String minute = String.valueOf(
             SettingUtil.getInstance().loadSettings().getExpectedTime() / 60);
         mTextMinute.setText(minute);
