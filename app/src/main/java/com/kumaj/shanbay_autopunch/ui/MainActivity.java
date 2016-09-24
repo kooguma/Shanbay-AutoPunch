@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mItemTimeExpected.setOnClickListener(this);
         mBtnPunchCard.setOnClickListener(this);
         String minute = String.valueOf(
-            SettingUtil.getInstance().loadSettings().getExpectedTime() / 1000/60);
+            SettingUtil.getInstance().loadSettings().getExpectedTime() / 1000 / 60);
         mTextMinute.setText(minute);
     }
 

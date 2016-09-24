@@ -84,7 +84,7 @@ public class ClickService extends AccessibilityService {
             Message msg = Message.obtain();
             //start learn
             if (getItemTextById(ID_LEARNING_START) != null) {
-                if (mStartTime == START_INTERVAL_TIME) {
+                if (mStartTime >= START_INTERVAL_TIME) {
                     msg.what = EVENT_START_LEARN;
                     Log.d(TAG, "start learn");
                     mStartTime = 0;
@@ -98,7 +98,7 @@ public class ClickService extends AccessibilityService {
                 || getItemTextById(ID_NEXT_BUTTON) != null
                 || getItemTextById(ID_NEXT_GROUP) != null
                 || getItemTextById(ID_STATE_BUTTON) != null) {
-                if (mIntervalTime == NEXT_INTERVAL_TIME) {
+                if (mIntervalTime >= NEXT_INTERVAL_TIME) {
                     msg.what = EVENT_KNOWN_OR_NEXT_GROUP;
                     Log.d(TAG, "known or next group");
                     mIntervalTime = 0;
@@ -127,7 +127,9 @@ public class ClickService extends AccessibilityService {
                     if (!performClickById(ID_KNOWN)) { // 认识/不认识
                         if (!performClickById(ID_NEXT_BUTTON)) { //下一个
                             if (!performClickById(ID_NEXT_GROUP)) { //下一组
-                                performClickById(ID_STATE_BUTTON);//去打卡
+                                if (mSettingModel.isAutoPunch()) {
+                                    performClickById(ID_STATE_BUTTON);//去打卡
+                                }
                             }
                         }
                     }
