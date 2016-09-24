@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -40,7 +41,11 @@ public class ClickService extends AccessibilityService {
 
     private final static String ID_STATE_BUTTON = PACKAGE_NAME + "state_btn";
 
+    private final static String CLASS_NAME_TOAST = "android.widget.Toast$TN";
+
     private final static String STR_PUNCH_CARD = "去打卡";
+
+    private final static String STR_CLICK_TO_EXIT = "再按一次退出程序";
 
     private final static String ID_LEARNING_NUM_TODAY = PACKAGE_NAME + "learning_num_today";
 
@@ -62,7 +67,7 @@ public class ClickService extends AccessibilityService {
 
     private class MyTimerTask extends TimerTask {
 
-        private final static int START_INTERVAL_TIME = 5;
+        private final static int START_INTERVAL_TIME = 5000;
         private final int NEXT_INTERVAL_TIME; //认识/不认识选择界面的时间间隔
         private int mStartTime;
         private int mIntervalTime;
@@ -70,7 +75,7 @@ public class ClickService extends AccessibilityService {
 
         MyTimerTask(int time) {
             NEXT_INTERVAL_TIME = calcIntervalTime();
-            Log.d(TAG, "interval time = " + time);
+            Log.d(TAG, "MyTimerTask interval time = " + time);
         }
 
 
@@ -85,7 +90,7 @@ public class ClickService extends AccessibilityService {
                     mStartTime = 0;
                     mTimerHandler.sendMessage(msg);
                 }
-                mStartTime++;
+                mStartTime += 100;
                 Log.d(TAG, "start time = " + mStartTime);
             }
             //known or next group
@@ -99,7 +104,7 @@ public class ClickService extends AccessibilityService {
                     mIntervalTime = 0;
                     mTimerHandler.sendMessage(msg);
                 }
-                mIntervalTime++;
+                mIntervalTime += 100;
                 Log.d(TAG, "interval time = " + mIntervalTime);
             }
         }
@@ -148,21 +153,29 @@ public class ClickService extends AccessibilityService {
     @Override public void onAccessibilityEvent(AccessibilityEvent event) {
         int eventType = event.getEventType();
         String className = event.getClassName().toString();
-        //// TODO: 16/9/13 监听返回键暂停服务
         Log.e(TAG, "evenType = " + eventType);
         Log.e(TAG, "class name = " + className);
+        //监听返回键
+        if (className.equals(CLASS_NAME_TOAST) &&
+            eventType == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED &&
+            event.getText().get(0).equals(STR_CLICK_TO_EXIT)) {
+            clear();
+        }
         if (className.equals("com.shanbay.words.home.HomeActivity")) {
             Log.e(TAG, "进入主界面");
             mTimerTask = new MyTimerTask(calcIntervalTime());
-            timer.schedule(mTimerTask, 0, 1000);
+            timer.schedule(mTimerTask, 0, 100);
         }
     }
 
 
-
-
     @Override public void onInterrupt() {
         Log.e(TAG, "onInterrupt");
+        clear();
+    }
+
+
+    private void clear() {
         mTimerHandler = null;
         mTimerTask.cancel();
     }
@@ -171,9 +184,6 @@ public class ClickService extends AccessibilityService {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2) private int calcIntervalTime() {
         int todayNum = Integer.parseInt(getItemTextById(ID_LEARNING_NUM_TODAY));
         int sections = todayNum * 2 + Math.round(todayNum / GROUP_WORDS_NUM);
-        //getExpectedTime - 已经被过的时间
-        //passedNum != 0 是否有纪录? ->有记录,减已经花过的时间;没有纪录,提示(可能不准)
-        //return 小于0的情况?
         Log.d(TAG, "total time = " + mSettingModel.getExpectedTime() +
             "todayNum = " + todayNum + " sections = " + sections);
         return Math.round(mSettingModel.getExpectedTime() / sections);
