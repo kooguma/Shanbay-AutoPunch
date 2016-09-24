@@ -26,13 +26,13 @@ import com.kumaj.shanbay_autopunch.R;
 import com.kumaj.shanbay_autopunch.mode.SettingModel;
 import com.kumaj.shanbay_autopunch.utils.SettingUtil;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    @BindView(R.id.item_time_expected) LinearLayout mItemTimeExpected;
-    @BindView(R.id.switch_auto_punch) SwitchCompat mSwitchAutoPunch;
-    @BindView(R.id.switch_auto_share) SwitchCompat mSwitchAutoShare;
-    @BindView(R.id.btn_punch_card) Button mBtnPunchCard;
-    @BindView(R.id.text_minute_num) TextView mTextMinute;
+    LinearLayout mItemTimeExpected;
+    SwitchCompat mSwitchAutoPunch;
+    SwitchCompat mSwitchAutoShare;
+    Button mBtnPunchCard;
+    TextView mTextMinute;
 
     private SettingModel mSettingModel = new SettingModel();
     private final static String SETTING_KEY = "SETTINGS";
@@ -42,8 +42,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        setupView();
+        mItemTimeExpected = (LinearLayout) findViewById(R.id.item_time_expected);
+        mSwitchAutoPunch = (SwitchCompat) findViewById(R.id.switch_auto_punch);
+        mSwitchAutoShare = (SwitchCompat) findViewById(R.id.switch_auto_share);
+        mBtnPunchCard = (Button) findViewById(R.id.btn_punch_card);
+        mTextMinute = (TextView) findViewById(R.id.text_minute_num);
     }
 
 
@@ -68,20 +71,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @OnClick({ R.id.item_time_expected, R.id.btn_punch_card })
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.item_time_expected:
-                showDialog();
-                break;
-            case R.id.btn_punch_card:
-                saveSettings();
-                startPunch();
-                break;
-        }
     }
 
 
@@ -160,5 +149,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+
+    @Override public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.item_time_expected:
+                showDialog();
+                break;
+            case R.id.btn_punch_card:
+                saveSettings();
+                startPunch();
+                break;
+        }
     }
 }
